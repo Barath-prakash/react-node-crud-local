@@ -1,85 +1,91 @@
-import React, { useState, useEffect } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
-import { Header } from './components/Header'
-import { Users } from './components/Users'
-import { DisplayBoard } from './components/DisplayBoard'
-import CreateUser from './components/CreateUser'
-import { getAllUsers, createUser } from './services/UserService'
+import React, { useState, useEffect } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
+import { Header } from "./components/Header";
+import { Users } from "./components/Users";
+import { DisplayBoard } from "./components/DisplayBoard";
+import CreateUser from "./components/CreateUser";
+import {
+  getAllUsers,
+  createUser,
+  deleteUser,
+  updateUser,
+} from "./services/UserService";
 
 function App() {
-
-  const [user, setUser] = useState({})
-  const [users, setUsers] = useState([])
-  const [numberOfUsers, setNumberOfUsers] = useState(0)
-
-
-  const userCreate = (e) => {
-
-      createUser(user)
-        .then(response => {
-          console.log(response);
-          setNumberOfUsers(numberOfUsers+1)
-      });
-  }
+  const [user, setUser] = useState({});
+  const [users, setUsers] = useState([]);
+  const [numberOfUsers, setNumberOfUsers] = useState(0);
 
   const fetchAllUsers = () => {
-    getAllUsers()
-      .then(users => {
-        console.log(users)
-        setUsers(users);
-        setNumberOfUsers(users.length)
-      });
-  }
+    getAllUsers().then((users) => {
+      setUsers(users);
+      setNumberOfUsers(users.length);
+    });
+  };
 
   useEffect(() => {
-    getAllUsers()
-      .then(users => {
-        console.log(users)
-        setUsers(users);
-        setNumberOfUsers(users.length)
-      });
-  }, [])
+    fetchAllUsers();
+  }, []);
 
   const onChangeForm = (e) => {
-      if (e.target.name === 'firstname') {
-          user.firstName = e.target.value;
-      } else if (e.target.name === 'lastname') {
-          user.lastName = e.target.value;
-      } else if (e.target.name === 'email') {
-          user.email = e.target.value;
-      }
-      setUser(user)
-  }
-  
-    
-    return (
-        <div className="App">
-          <Header></Header>
-          <div className="container mrgnbtm">
-            <div className="row">
-              <div className="col-md-8">
-                  <CreateUser 
-                    user={user}
-                    onChangeForm={onChangeForm}
-                    createUser={userCreate}
-                    >
-                  </CreateUser>
-              </div>
-              <div className="col-md-4">
-                  <DisplayBoard
-                    numberOfUsers={numberOfUsers}
-                    getAllUsers={fetchAllUsers}
-                  >
-                  </DisplayBoard>
-              </div>
-            </div>
+    e.persist();
+    setUser((prevState) => ({
+      ...prevState,
+      [e.target?.name]: e.target?.value,
+    }));
+  };
+
+  const userCreate = async () => {
+    const response = !user?.userId
+      ? await createUser(user)
+      : await updateUser(user);
+    setNumberOfUsers(numberOfUsers + 1);
+    fetchAllUsers();
+    setUser({});
+  };
+
+  const editUser = (user, inx) => {
+    setUser((prevState) => ({
+      ...prevState,
+      ...user,
+      userId: inx,
+    }));
+  };
+
+  const delUser = async (inx) => {
+    const res = window.confirm("Do you want to delete user?");
+    if (res) {
+      await deleteUser(inx);
+      fetchAllUsers();
+    }
+  };
+
+  return (
+    <div className="App">
+      <Header />
+      <div className="container mrgnbtm">
+        <div className="row">
+          <div className="col-md-8">
+            <CreateUser
+              user={user}
+              onChangeForm={onChangeForm}
+              createUser={userCreate}
+            />
           </div>
-          <div className="row mrgnbtm">
-            <Users users={users}></Users>
+          <div className="col-md-4">
+            <DisplayBoard
+              numberOfUsers={numberOfUsers}
+              getAllUsers={fetchAllUsers}
+            />
           </div>
         </div>
-    );
+      </div>
+      <div className="row mrgnbtm">
+        <Users users={users} editUser={editUser} delUser={delUser} />
+      </div>
+    </div>
+  );
 }
 
 export default App;

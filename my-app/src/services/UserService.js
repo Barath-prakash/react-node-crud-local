@@ -1,20 +1,22 @@
-
+import axios from "axios";
+export const API_HOST = "http://localhost:3080";
 export async function getAllUsers() {
-
-    try{
-        const response = await fetch('/api/users');
-        return await response.json();
-    }catch(error) {
-        return [];
-    }
-    
+  try {
+    const response = await axios.get(API_HOST + "/api/get-users");
+    return response.data;
+  } catch (error) {
+    return [];
+  }
 }
 
-export async function createUser(data) {
-    const response = await fetch(`/api/user`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({user: data})
-      })
-    return await response.json();
+export function createUser(data) {
+  return axios.post(`${API_HOST}/api/add-user`, { user: data });
+}
+
+export function updateUser(user) {
+  return axios.put(`${API_HOST}/api/update-user`, { user });
+}
+
+export function deleteUser(userId) {
+  return axios.delete(`${API_HOST}/api/delete-user/${userId}`);
 }

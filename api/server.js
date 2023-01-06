@@ -1,47 +1,54 @@
-const express = require('express');
-const path = require('path');
-const app = express(),
-      bodyParser = require("body-parser");
-      port = 80;
+const express = require("express");
+const path = require("path");
+const app = express();
+const bodyParser = require("body-parser");
+port = 3080;
 
 // place holder for the data
-const users = [
-  {
-    firstName: "first1",
-    lastName: "last1",
-    email: "abc@gmail.com"
-  },
-  {
-    firstName: "first2",
-    lastName: "last2",
-    email: "abc@gmail.com"
-  },
-  {
-    firstName: "first3",
-    lastName: "last3",
-    email: "abc@gmail.com"
-  }
-];
+const users = [];
 
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, '../my-app/build')));
+app.use(express.static(path.join(__dirname, "../my-app/build")));
 
-app.get('/api/users', (req, res) => {
-  console.log('api/users called!')
+app.use(function (req, res, next) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Allow-Credentials", true);
+  next();
+});
+
+app.get("/api/get-users", (req, res) => {
+  console.log("api/users called!");
   res.json(users);
 });
 
-app.post('/api/user', (req, res) => {
+app.post("/api/add-user", (req, res) => {
+  console.log("req.body", req.body);
   const user = req.body.user;
-  console.log('Adding user:::::', user);
+  console.log("Adding user:::::", user);
   users.push(user);
   res.json("user addedd");
 });
 
-app.get('/', (req,res) => {
-  res.sendFile(path.join(__dirname, '../my-app/build/index.html'));
+app.put("/api/update-user", (req, res) => {
+  const user = req.body.user;
+  console.log("Updating user:::::", user);
+  users[user.userId] = user;
+  res.json("user updated");
+});
+
+app.delete("/api/delete-user/:userId", (req, res) => {
+  const userId = req.params.userId;
+  console.log("Adding user:::::", userId);
+  users.splice(userId, 1);
+  res.json("user addedd");
+});
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../my-app/build/index.html"));
 });
 
 app.listen(port, () => {
-    console.log(`Server listening on the port::${port}`);
+  console.log(`Server listening on the port::${port}`);
 });
