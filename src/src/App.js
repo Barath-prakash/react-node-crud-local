@@ -37,9 +37,12 @@ function App() {
   };
 
   const userCreate = async () => {
-    const response = !user?.userId
-      ? await createUser(user)
-      : await updateUser(user);
+    console.log(
+      user?.userId !== undefined ? "---Update user---" : "---Add user---"
+    );
+    user?.userId !== undefined
+      ? await updateUser(user)
+      : await createUser(user);
     setNumberOfUsers(numberOfUsers + 1);
     fetchAllUsers();
     setUser({});

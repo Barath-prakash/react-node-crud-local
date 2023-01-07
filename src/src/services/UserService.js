@@ -1,5 +1,5 @@
 import axios from "axios";
-export const API_HOST = "http://localhost:3080";
+export const API_HOST = "http://localhost:8080";
 export async function getAllUsers() {
   try {
     const response = await axios.get(API_HOST + "/api/get-users");

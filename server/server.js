@@ -2,13 +2,13 @@ const express = require("express");
 const path = require("path");
 const app = express();
 const bodyParser = require("body-parser");
-port = 3080;
+port = 8080;
 
 // place holder for the data
 const users = [];
 
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, "../my-app/build")));
+app.use(express.static(path.join(__dirname, "../src/build")));
 
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -46,7 +46,7 @@ app.delete("/api/delete-user/:userId", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../my-app/build/index.html"));
+  res.sendFile(path.join(__dirname, "../src/build/index.html"));
 });
 
 app.listen(port, () => {
