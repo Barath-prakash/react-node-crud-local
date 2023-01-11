@@ -1,6 +1,7 @@
 import React from "react";
 
-export const DisplayBoard = ({ numberOfUsers, getAllUsers }) => {
+export const DisplayBoard = (props) => {
+  const { numberOfUsers, getAllUsers } = props;
   return (
     <div
       style={{

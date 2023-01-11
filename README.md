@@ -2,20 +2,20 @@
 
 Note: If there is no node_modules, Run
 
-#### `npm install` (In both src and server directory)
+#### `npm install` (Inside both ui-app and api-server directory(folder))
 
-**_ Front end (Src) section _**
+**_ Front end (ui-app) section _**
 
-In the project src directory (rootDirectory), you can run:
+In the project ui-app directory (front-end rootDirectory), you can run:
 
 ### `npm run start`
 
 Runs the app in the development mode.<br>
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-**_ Server section _**
+**_ Server (api-server) section _**
 
-In the project server directory (rootDirectory/server), you can run:
+In the project api-server directory (backend rootDirectory), you can run:
 
 ### `npm run dev`
 
